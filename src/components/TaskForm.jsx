@@ -2,17 +2,26 @@ import React, { useState, useCallback } from 'react';
 import { Input, Select, Textarea, Button } from './UI';
 import useInput from '../hooks/useInput';
 import { isNotEmpty, isValidPriority } from '../utils/validation';
+import { useTaskContext } from '../context/TaskContext';
 
 /**
  * Task form component with comprehensive form handling
  * Demonstrates: Form handling, validation, custom hooks, useCallback optimization
  */
 const TaskForm = React.memo(function TaskForm({ 
-  onSubmit, 
   initialData = {}, 
-  isLoading = false,
   onCancel 
 }) {
+  // Use the task context
+  const {
+    isSubmitting: isLoading,
+    handleCreateTask,
+    handleUpdateTask
+  } = useTaskContext();
+  
+  // Determine if we're editing or creating
+  const isEditing = !!initialData.id;
+  const onSubmit = isEditing ? handleUpdateTask : handleCreateTask;
   // Using custom useInput hook for form fields with validation
   const {
     value: title,

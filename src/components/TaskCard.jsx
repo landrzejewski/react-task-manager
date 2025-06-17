@@ -1,17 +1,21 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import Button from './UI/Button';
 import { updateTask, deleteTask, updateSubtask, createSubtask, deleteSubtask } from '../utils/api';
+import { useTaskContext } from '../context/TaskContext';
 
 /**
  * Task card component with optimistic updates and progress tracking
  * Demonstrates: useMemo, useCallback, optimistic updates, progress calculation
  */
 const TaskCard = React.memo(function TaskCard({ 
-  task, 
-  onTaskUpdate, 
-  onTaskDelete, 
-  onEdit 
+  task 
 }) {
+  // Use the task context
+  const {
+    handleTaskUpdate: onTaskUpdate,
+    handleTaskDelete: onTaskDelete,
+    handleEditTask: onEdit
+  } = useTaskContext();
   const [isUpdating, setIsUpdating] = useState(false);
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
   const [showSubtaskForm, setShowSubtaskForm] = useState(false);
@@ -123,7 +127,7 @@ const TaskCard = React.memo(function TaskCard({
       const updatedSubtasks = task.subtasks.map(st => 
         st.id === tempSubtask.id ? createdSubtask : st
       );
-      onTaskUpdate({ ...task, subtasks: [...task.subtasks, createdSubtask] });
+      onTaskUpdate({ ...task, subtasks: updatedSubtasks });
       
       setNewSubtaskTitle('');
       setShowSubtaskForm(false);

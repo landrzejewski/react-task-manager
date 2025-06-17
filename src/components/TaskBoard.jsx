@@ -4,20 +4,20 @@ import Button from './UI/Button';
 import Input from './UI/Input';
 import LoadingSpinner from './UI/LoadingSpinner';
 import useLocalStorage from '../hooks/useLocalStorage';
+import { useTaskContext } from '../context/TaskContext';
 
 /**
  * Task board component with filtering and search
  * Demonstrates: useEffect, useMemo, useCallback, localStorage persistence
  */
-const TaskBoard = React.memo(function TaskBoard({ 
-  tasks, 
-  isLoading, 
-  error, 
-  onTaskUpdate, 
-  onTaskDelete, 
-  onEdit,
-  onRefresh 
-}) {
+const TaskBoard = React.memo(function TaskBoard() {
+  // Use the task context
+  const {
+    tasks,
+    isLoading,
+    error,
+    loadTasks: onRefresh
+  } = useTaskContext();
   const [searchTerm, setSearchTerm] = useLocalStorage('taskSearch', '');
   const [statusFilter, setStatusFilter] = useLocalStorage('statusFilter', 'all');
   const [priorityFilter, setPriorityFilter] = useLocalStorage('priorityFilter', 'all');
@@ -258,9 +258,6 @@ const TaskBoard = React.memo(function TaskBoard({
                 <TaskCard
                   key={task.id}
                   task={task}
-                  onTaskUpdate={onTaskUpdate}
-                  onTaskDelete={onTaskDelete}
-                  onEdit={onEdit}
                 />
               ))}
               {tasksByStatus.todo.length === 0 && (
@@ -281,9 +278,6 @@ const TaskBoard = React.memo(function TaskBoard({
                 <TaskCard
                   key={task.id}
                   task={task}
-                  onTaskUpdate={onTaskUpdate}
-                  onTaskDelete={onTaskDelete}
-                  onEdit={onEdit}
                 />
               ))}
               {tasksByStatus['in-progress'].length === 0 && (
@@ -304,9 +298,6 @@ const TaskBoard = React.memo(function TaskBoard({
                 <TaskCard
                   key={task.id}
                   task={task}
-                  onTaskUpdate={onTaskUpdate}
-                  onTaskDelete={onTaskDelete}
-                  onEdit={onEdit}
                 />
               ))}
               {tasksByStatus.completed.length === 0 && (
